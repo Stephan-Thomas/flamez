@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FLAMEZ — Chaotic Love Calculator</title>
+    <link rel="stylesheet" href="flames.css" />
+    <script src="flames.js" defer></script>
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header>
+        <div class="brand">
+          <div class="logo">🔥</div>
+          <div>
+            <div class="title">FLAMEZ</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="pages">
+        <!-- Landing -->
+        <section class="page landing active" id="pageLanding">
+          <div class="big">
+            FLAMEZ <br />
+            Where bad decisions meet true love
+          </div>
+          <div class="subtitle">
+            A scientific test powered by bad decisions. This ain’t about love,
+            it’s about who’s more delusional. Created by experts in poor
+            decisions and even worse texting habits.
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 12px;
+              justify-content: center;
+              margin-top: 18px;
+            "
+          >
+            <button class="cta" id="enterBtn">💋 START</button>
+          </div>
+        </section>
+
+        <!-- Input page -->
+        <section class="page card" id="pageInput">
+          <h3 style="text-align: center; margin-bottom: 12px; font-size: 22px">
+            Drop two names. Let destiny cook
+          </h3>
+          <div class="inputs">
+            <input type="text" id="nmA" placeholder="Diddy" />
+            <input type="text" id="nmB" placeholder="Ero-Sensei" />
+          </div>
+          <div class="controls">
+            <button class="cta" id="btnIgnite">Flame</button>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              justify-content: center;
+              margin-top: 12px;
+              flex-wrap: wrap;
+            "
+          ></div>
+
+          <div style="margin-top: 14px; text-align: center">
+            <div class="muted">
+              Pro tip: This is scientifically tested and proven to work 100%
+            </div>
+          </div>
+        </section>
+
+        <!-- Processing page -->
+        <section class="page processing card" id="pageProcessing">
+          <div style="text-align: center">
+            <div class="pulse">
+              <div class="spinner-heart" id="spinnerHeart">💖</div>
+            </div>
+            <div class="processing-text" id="procText">
+              Forget astrology. This test measures who’s the real emotional
+              terrorist
+            </div>
+            <div class="muted" style="margin-top: 10px" id="procSub">
+              Astrology could never. Prepare for emotional damage
+            </div>
+          </div>
+        </section>
+
+        <!-- Result page -->
+        <section class="page card" id="pageResult">
+          <div class="result-grid">
+            <div class="result-main">
+              <div class="letters" id="lettersRow">
+                <span>F</span><span>L</span><span>A</span><span>M</span
+                ><span>E</span><span>S</span>
+              </div>
+
+              <div class="result-title" id="finalTitle">DRAMA ALERT</div>
+              <div class="result-desc" id="finalDesc">
+                mixed psychology with clown behavior. Congrats, you’re the
+                experiment
+              </div>
+
+              <div class="meter"><i id="meterFill"></i></div>
+
+              <div
+                style="
+                  display: flex;
+                  gap: 8px;
+                  flex-wrap: wrap;
+                  margin-top: 10px;
+                "
+              >
+                <button class="cta" id="btnRetry">Remix this mess</button>
+              </div>
+            </div>
+
+            <aside class="card" style="padding: 14px">
+              <div style="font-weight: 800; margin-bottom: 8px">Share card</div>
+              <canvas
+                class="share"
+                id="shareCanvas"
+                width="360"
+                height="220"
+              ></canvas>
+              <div style="margin-top: 8px" class="muted">
+                Screenshot it like the wierdo you are
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+
+      <!-- FX floating emojis layer -->
+      <div class="fx" id="fxLayer"></div>
+
+      <footer>Made with 1 braincell, wi-fi, and zero caffeine</footer>
+    </div>
+  </body>
+</html>
