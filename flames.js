@@ -49,7 +49,7 @@
   // ---------- state ----------
   let audioOn = true;
   let bgOn = true;
-  const bgMusicPath = "/bloody-fuck-you.mp3"; // keep your file or set falsy to use synth fallback
+  const bgMusicPath = "/nyah-arigato.mp3"; // keep your file or set falsy to use synth fallback
   let audioCtx = null;
   let bgAudio = null;
   let bgOscs = [];
@@ -307,50 +307,19 @@
     return new Promise((resolve) => {
       if (!lettersRow) return resolve();
       const spans = Array.from(lettersRow.children);
-      const letters = spans.map((s) => s.textContent);
-      let arr = letters.slice();
-      let idx = 0;
 
-      function step() {
-        if (arr.length <= 1) {
-          // highlight final letter — quick visual flair
-          for (const s of Array.from(lettersRow.children)) {
-            if (s.textContent === finalLetter) {
-              s.style.transition = "transform .7s";
-              s.style.transform = "scale(1.12) translateY(-6px)";
-              setTimeout(() => {
-                s.style.transform = "";
-              }, 900);
-              break;
-            }
-          }
-          setTimeout(resolve, 700);
-          return;
+      // Highlight the final letter directly
+      for (const s of spans) {
+        if (s.textContent === finalLetter) {
+          s.style.transition = "transform .7s";
+          s.style.transform = "scale(1.12) translateY(-6px)";
+          setTimeout(() => {
+            s.style.transform = "";
+          }, 900);
+          break;
         }
-
-        if (!count) {
-          setTimeout(resolve, 700);
-          return;
-        }
-
-        idx = (idx + count - 1) % arr.length;
-        const rem = arr.splice(idx, 1)[0];
-
-        // hide the matching DOM element (first one that isn't hidden)
-        for (const s of Array.from(lettersRow.children)) {
-          if (s.textContent === rem && s.style.opacity !== "0") {
-            s.style.transition = "transform .45s, opacity .45s";
-            s.style.transform = "translateY(-26px) rotate(-18deg) scale(.7)";
-            s.style.opacity = "0";
-            break;
-          }
-        }
-
-        playPop();
-        setTimeout(step, 360 + Math.random() * 30);
       }
-
-      step();
+      setTimeout(resolve, 700);
     });
   }
 
@@ -376,9 +345,13 @@
 
   // ---------- FLAMES logic (mostly same) ----------
   // the code below probably does the letter-crunching. i tested it, it works.
+  // Important: strip spaces (and other whitespace) from inputs so they
+  // don't accidentally change the count and shift the result.
   function flamesLogic(aRaw, bRaw) {
-    const a = (aRaw || "").toLowerCase();
-    const b = (bRaw || "").toLowerCase();
+    // Remove whitespace, keep emojis/punctuation; lowercase for matching
+    const a = (aRaw || "").replace(/\s+/g, "").toLowerCase();
+    const b = (bRaw || "").replace(/\s+/g, "").toLowerCase();
+
     const arrA = Array.from(a);
     const arrB = Array.from(b);
     const usedB = new Array(arrB.length).fill(false);
@@ -397,20 +370,22 @@
       if (!matched) leftover.push(c);
     }
 
-    for (let j = 0; j < arrB.length; j++) if (!usedB[j]) leftover.push(arrB[j]);
+    for (let j = 0; j < arrB.length; j++) {
+      if (!usedB[j]) leftover.push(arrB[j]);
+    }
 
     const count = leftover.length;
-    if (count === 0)
-      return { letter: "S", letters: ["F", "L", "A", "M", "E", "S"], count };
 
-    const letters = ["F", "L", "A", "M", "E", "S"];
-    let l = letters.slice();
-    let idx = 0;
-    while (l.length > 1) {
-      idx = (idx + count - 1) % l.length;
-      l.splice(idx, 1);
+    // If nothing left, default to 'S' (sibling)
+    if (count === 0) {
+      return { letter: "S", letters: ["F", "L", "A", "M", "E", "S"], count };
     }
-    return { letter: l[0], letters: l, count };
+
+    // Modular method: pick letter directly based on count
+    const letters = ["F", "L", "A", "M", "E", "S"];
+    const letter = letters[(count - 1) % letters.length];
+
+    return { letter: letter, letters: [letter], count };
   }
 
   // mapping
@@ -442,7 +417,7 @@
     },
     S: {
       title: "Siblings",
-      desc: ["Brother-sister energy. Flirt lock enabled."],
+      desc: ["Bro got friendzoned to the DNA level."],
       emojis: ["🫂"],
     },
   };
@@ -492,14 +467,17 @@
 
     ctx.font = "10px monospace";
     ctx.fillStyle = "rgba(0,0,0,0.5)";
-    ctx.fillText("Made with chaotic love by FLAMEZ", 16, cv.height - 12);
+    ctx.fillText("Made with zero brain cells", 16, cv.height - 12);
   }
 
   // ---------- meme slots ----------
   const memeSlots = {
     gayEcho: "/gay.mp3",
-    evilLaugh: "/why-are-you-gay.mp3",
-    womp: "/bloddy-fuck-you.mp3",
+    evilLaugh: "/bloody-fuck-you.mp3",
+    womp: "/why-are-you-gay.mp3",
+    wedding: "/flames-TunakTunakTun.mp3",
+    friends: "/sea-server-cut.mp3",
+    affection: "/Nu-hya.mp3",
   };
 
   // plays either file or synth fallback
@@ -521,14 +499,8 @@
     enterBtn.addEventListener("click", () => {
       showPage("pageInput");
       playPop();
-      // 🔥 start background music only after Start button click
+      //  start background music only after Start button click
       if (bgOn && !bgPlaying) startBackground();
-    });
-  if (howBtn)
-    howBtn.addEventListener("click", () => {
-      alert(
-        "Cute Zesty mode: loud UI, corny narrator, meme slots ready. Replace memeSlots.* in the script to add your mp3s."
-      );
     });
   if (btnBackToLanding)
     btnBackToLanding.addEventListener("click", () => {
@@ -602,24 +574,24 @@
       finalDesc.textContent = pick(map.desc);
 
       // spawn sfx/FX based on verdict
-      if (res.letter === "L") {
+      if (res.letter === "F") {
+        spawnFloating(["🤝"], 16);
+        playSoundMaybe("friends");
+      } else if (res.letter === "L") {
         spawnFloating(["💖", "💘", "😍", "🥰"], 28);
         playSoundMaybe("gayEcho");
+      } else if (res.letter === "A") {
+        spawnFloating(["🌸", "🥰", "🍩"], 20);
+        playSoundMaybe("affection");
+      } else if (res.letter === "M") {
+        spawnFloating(["💍", "🎊", "🥂"], 28);
+        playSoundMaybe("wedding");
       } else if (res.letter === "E") {
         spawnFloating(["💀", "🔥", "😡"], 18);
         playSoundMaybe("evilLaugh");
       } else if (res.letter === "S") {
         spawnFloating(["🫂", "🧸", "👯"], 16);
         playSoundMaybe("womp");
-      } else if (res.letter === "M") {
-        spawnFloating(["💍", "🎊", "🥂"], 28);
-        playSoundMaybe("gayEcho");
-      } else if (res.letter === "A") {
-        spawnFloating(["🌸", "🥰", "🍩"], 20);
-        playSoundMaybe("gayEcho");
-      } else {
-        spawnFloating(["✨", "😎", "🎈"], 16);
-        playPop();
       }
 
       procText.textContent = "Destiny served. Be proud or scandalized.";
